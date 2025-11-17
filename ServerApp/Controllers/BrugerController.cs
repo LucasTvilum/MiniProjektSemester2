@@ -6,7 +6,7 @@ using Core.Models;
 namespace ServerApp.Controllers
 {
     [ApiController]
-    [Route("api/annonce")]
+    [Route("api/bruger")]
     public class BrugerController : ControllerBase
     {
 
