@@ -1,5 +1,6 @@
 @page "/annoncer"
 @using Core.Models
+@using ClientApp.Service
 
 <h3>Annoncer</h3>
 
@@ -28,6 +29,9 @@
 @code {
     bool modalWindow = false;
     int selectedId;
+    
+    [Inject]
+    private IAnnonce annonceService { get; set; }
 
 // fake data indtil backend er klar
     List<Annonce> ListeAfAnnoncer = new()
