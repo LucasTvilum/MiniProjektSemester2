@@ -1,4 +1,5 @@
 ﻿@using Core.Models
+@using ClientApp.Service
 
 @page "/OpretAnnoncePage"
 <h3>OpretAnnoncePage</h3>
@@ -41,11 +42,16 @@
     
     private List<string> categories = new List<string> { "tøj", "bukser", "hat", "" +
                                                                                  "" };
+    [Inject]
+    private IAnnonce annonceService { get; set; }
     
     private Annonce annonce = new();
  
     private async Task HandleSubmit()
     {
+        Annonce annoncetoadd = new() { Description = "Sort Jakke", Price = 150, Image = "" };
+        Console.WriteLine("handle submit");
+        await annonceService.Add(annoncetoadd);
     }
     
 }

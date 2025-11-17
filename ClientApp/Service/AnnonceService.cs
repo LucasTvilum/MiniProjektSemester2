@@ -6,8 +6,8 @@ namespace ClientApp.Service;
 public class AnnonceService : IAnnonce
 {
     private HttpClient http;
-
-    private string url = "http://localhost:5267";
+    
+    private string url = "http://localhost:5107";
 
     public AnnonceService(HttpClient http)
     {
@@ -16,14 +16,15 @@ public class AnnonceService : IAnnonce
 
     public async Task<Annonce[]> GetAll()
     {
-        Console.WriteLine("Henter alle annoncer...");
-        var annonces = await http.GetFromJsonAsync<Annonce[]>($"{url}/api/annonce");
-        return annonces ?? Array.Empty<Annonce>();
+        Console.WriteLine("GetAll from mock");
+        var todoitemlist = await http.GetFromJsonAsync<Annonce[]>($"{url}/api/annonce/");
+       
+        return todoitemlist;
     }
 
-    public async Task Add(Annonce item)
+    public async Task Add(Annonce annonce)
     {
-        await http.PostAsJsonAsync($"{url}/api/annonce", item);
+        await http.PostAsJsonAsync($"{url}/api/annonce", annonce);
     }
 
     public async Task Delete(string annonceId)
