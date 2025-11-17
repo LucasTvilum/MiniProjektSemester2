@@ -1,60 +1,50 @@
-@page "/annoncer"
 @using Core.Models
 @using ClientApp.Service
 
 <h3>Annoncer</h3>
 
 
-@foreach (var a in ListeAfAnnoncer.Where(a => a.Aktiv))
+@foreach (var a in Annonce)
 {
     <div class="annonce-card">
-        <img src="@a.BilledeUrl" width="100" />
-        <h3>@a.Titel</h3>
-        <p>@a.Pris kr.</p>
-        <button @onclick="() => Køb(a.Id)">KØB</button>
-      
-    </div>
-}
+        <img src="@a.Image" width="200" />
+        <h3>@a.Description</h3>
+        <p>@a.Price kr.</p>
 
-@if (modalWindow)
-{
-    <div class="modal">
-        <div class="modal-content">
-            <p>Du har valgt annonce @selectedId</p>
-            <button @onclick="Luk">Luk</button>
-        </div>
+        <button @onclick="() => Køb(a.Id)">KØB</button>
     </div>
 }
 
 @code {
     bool modalWindow = false;
-    int selectedId;
+    string selectedId;
     
     [Inject]
     private IAnnonce annonceService { get; set; }
 
 // fake data indtil backend er klar
-    List<Annonce> ListeAfAnnoncer = new()
+    List<Annonce> Annonce = new()
     {
-        new() { Id = 1, Titel = "Sort Jakke", Pris = 150, BilledeUrl = "https://images.only.com/15349737/4771709/001/only-onllearainpuffershortotw-sort.jpg?", Aktiv=true},
-        new() { Id = 2, Titel = "Taske", Pris = 80, BilledeUrl = "https://img01.ztat.net/article/spp-media-p1/806945a23d3740f598ace208112c8eed/3276754144df4b0f9849207e079ce0ab.jpg?", Aktiv=true }
+        new() { Description = "Sort Jakke", Price = 150, Image = "" },
+        new() { Description = "Taske", Price = 80, Image = "" }
     };
 
-    private void Køb(int id)
+    private void Køb(string id)
     {
-        var annonce = ListeAfAnnoncer.FirstOrDefault(a => a.Id == id);
-
-        if (annonce != null)
-        {
-            annonce.Aktiv = false; 
-        }
         selectedId = id;
         modalWindow = true;
+        
     }
 
     private void Luk()
     {
+      
         modalWindow = false;
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await annonceService.GetAll();
     }
 }
 

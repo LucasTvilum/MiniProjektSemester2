@@ -9,17 +9,17 @@
     
     <div class="col-md-12 mb-3">
         <label for="Name">Name</label>
-        <InputText id="Name" @bind-Value="annonce.Titel" class="form-control" />
+        <InputText id="Name" @bind-Value="annonce.Description" class="form-control" />
     </div>
     
     <div class="col-md-6 mb-3">
         <label for="Price">Price</label>
-        <InputNumber id="Price" @bind-Value="annonce.Pris" class="form-control" />
+        <InputNumber id="Price" @bind-Value="annonce.Price" class="form-control" />
     </div>
     
     <div class="col-md-12 mb-3">
         <label for="Category">Category</label>
-        <InputSelect id="Category" @bind-Value="annonce.type"> 
+        <InputSelect id="Category" @bind-Value="annonce.Type"> 
             @foreach (var cat in categories)
             {
                 <option value="@cat">@cat</option>
