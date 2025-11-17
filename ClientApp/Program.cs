@@ -19,7 +19,7 @@ public class Program
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddSingleton<IAnnonce, AnnonceService>();
         builder.Services.AddSingleton<IBruger, BrugerService>();
-        //builder.Services.AddSingleton<ILokaler, LokaleService>();
+        builder.Services.AddSingleton<ILokaler, LokaleService>();
 
         await builder.Build().RunAsync();       
     }

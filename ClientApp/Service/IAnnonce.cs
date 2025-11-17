@@ -9,5 +9,5 @@ public interface IAnnonce
 
     Task Add(Annonce item);
 
-    Task Delete(string todoid);
+    Task Delete(string annonceId);
 }
