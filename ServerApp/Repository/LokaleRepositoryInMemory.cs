@@ -32,8 +32,8 @@ internal class LokaleRepositoryInMemory : ILokaleRepository
         return existingItem!;
     }
 
-    public void Delete(Lokale lokale)
+    public void Delete(string id)
     {
-        todos.RemoveAll(t => t.Id == lokale.Id);
+        todos.RemoveAll(t => t.Id == id);
     }
 }

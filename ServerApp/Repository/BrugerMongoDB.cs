@@ -31,8 +31,8 @@ public class BrugerMongoDB : IBrugerRepository
         return bruger;
     }
 
-    public void Delete(Bruger bruger)
+    public void Delete(string id)
     {
-        _collection.DeleteOne(bruger.Id);
+        _collection.DeleteOne(id);
     }
 }

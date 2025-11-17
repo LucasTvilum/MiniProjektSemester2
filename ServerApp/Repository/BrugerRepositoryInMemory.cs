@@ -32,8 +32,8 @@ internal class BrugerRepositoryInMemory : IBrugerRepository
         return existingItem!;
     }
 
-    public void Delete(Bruger bruger)
+    public void Delete(string id)
     {
-        todos.RemoveAll(t => t.Id == bruger.Id);
+        todos.RemoveAll(t => t.Id == id);
     }
 }
