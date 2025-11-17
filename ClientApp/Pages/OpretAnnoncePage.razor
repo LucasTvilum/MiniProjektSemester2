@@ -1,6 +1,51 @@
-﻿@page "/OpretAnnoncePage"
+﻿@using Core.Models
+
+@page "/OpretAnnoncePage"
 <h3>OpretAnnoncePage</h3>
 
+<EditForm Model="@annonce" OnValidSubmit="@HandleSubmit" class="row p-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <div class="col-md-12 mb-3">
+        <label for="Name">Name</label>
+        <InputText id="Name" @bind-Value="annonce.Titel" class="form-control" />
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <label for="Price">Price</label>
+        <InputNumber id="Price" @bind-Value="annonce.Pris" class="form-control" />
+    </div>
+    
+    <div class="col-md-12 mb-3">
+        <label for="Category">Category</label>
+        <InputSelect id="Category" @bind-Value="annonce.type"> 
+            @foreach (var cat in categories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </InputSelect>
+    </div>
+    
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary" >Submit</button>
+    </div>
+    
+    <div class="col-12 mb-3">
+        <button type="reset" class="btn btn-primary">Reset</button>
+    </div>
+
+</EditForm> 
+
 @code {
+    
+    private List<string> categories = new List<string> { "tøj", "bukser", "hat", "" +
+                                                                                 "" };
+    
+    private Annonce annonce = new();
+ 
+    private async Task HandleSubmit()
+    {
+    }
     
 }
