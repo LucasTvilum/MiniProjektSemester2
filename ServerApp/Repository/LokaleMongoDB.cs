@@ -31,8 +31,8 @@ public class LokaleMongoDB : ILokaleRepository
         return lokale;
     }
 
-    public void Delete(Lokale lokale)
+    public void Delete(string id)
     {
-        _collection.DeleteOne(lokale.Id);
+        _collection.DeleteOne(id);
     }
 }

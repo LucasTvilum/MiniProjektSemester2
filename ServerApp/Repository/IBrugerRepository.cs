@@ -9,6 +9,6 @@ public interface IBrugerRepository
     
     Bruger Update(Bruger bruger);
     
-    void Delete(Bruger bruger);
+    void Delete(string id);
     
 }

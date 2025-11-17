@@ -1,45 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
-using Core.Models;
 using ServerApp.Repository;
+using Core.Models;
+
 
 namespace ServerApp.Controllers
 {
     [ApiController]
-    [Route("api/bruger")]
+    [Route("api/annonce")]
     public class BrugerController : ControllerBase
     {
-        private readonly IBrugerRepository _repo;
 
-        public BrugerController(IBrugerRepository repo)
+       
+        private IBrugerRepository brugerRepo;
+
+        public BrugerController(IBrugerRepository brugerRepo) {
+            this.brugerRepo = brugerRepo;
+        }
+
+        [HttpGet]
+        public IEnumerable<Bruger> Get()
         {
-            _repo = repo;
+            return brugerRepo.GetAll();
         }
         
         [HttpPost]
-        public ActionResult<Bruger> Add([FromBody] Bruger bruger)
+        public void Add(Bruger bruger) {
+            brugerRepo.Add(bruger);
+        }
+
+
+        [HttpGet("{id}")]
+        public ActionResult<Bruger> Update(string id, [FromBody] Bruger bruger)
         {
-            var added = _repo.Add(bruger);
-            return Created("", added);
+            bruger.Id = id;
+            var updated =  brugerRepo.Update(bruger);
+            if ((updated = null) != null) return NotFound();
+            return Ok(updated);
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public void DeleteByQuery([FromQuery] string id)
+        {
+            brugerRepo.Delete(id);
         }
         
-        [HttpPost("login")]
-        public ActionResult Login([FromBody] Bruger login)
-        {
-            var bruger = _repo.GetAll().FirstOrDefault(b => b.Name == login.Name);
-
-            if (bruger == null)
-                return NotFound("Bruger findes ikke du");
-
-            if (bruger.Password != login.Password)
-                return BadRequest("Forkert kodeord homie");
-
-            return Ok("Login succes");
-        }
-        
-        [HttpGet]
-        public ActionResult<List<Bruger>> GetAll()
-        {
-            return Ok(_repo.GetAll());
-        }
     }
 }

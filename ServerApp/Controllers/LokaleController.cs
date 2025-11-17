@@ -1,39 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
-using Core.Models;
 using ServerApp.Repository;
+using Core.Models;
+
 
 namespace ServerApp.Controllers
 {
     [ApiController]
-    [Route("api/lokale")]
+    [Route("api/annonce")]
     public class LokaleController : ControllerBase
     {
-        private readonly ILokaleRepository _repo;
 
-        public LokaleController(ILokaleRepository repo)
-        {
-            _repo = repo;
+       
+        private ILokaleRepository lokaleRepo;
+
+        public LokaleController(ILokaleRepository lokaleRepo) {
+            this.lokaleRepo = lokaleRepo;
         }
-        
+
         [HttpGet]
-        public ActionResult<List<Lokale>> GetAll()
+        public IEnumerable<Lokale> Get()
         {
-            return Ok(_repo.GetAll());
-        }
-        
-        [HttpGet("{id}")]
-        public ActionResult<Lokale> GetById(string id)
-        {
-            var item = _repo.GetAll();
-            if (item == null) return NotFound();
-            return Ok(item);
+            return lokaleRepo.GetAll();
         }
         
         [HttpPost]
-        public ActionResult<Lokale> Add([FromBody] Lokale lokale)
-        {
-            var added = _repo.Add(lokale);
-            return Created("", added);
+        public void Add(Lokale lokale) {
+            lokaleRepo.Add(lokale);
         }
+
+
+        [HttpGet("{id}")]
+        public ActionResult<Lokale> Update(string id, [FromBody] Lokale lokale)
+        {
+            lokale.Id = id;
+            var updated =  lokaleRepo.Update(lokale);
+            if ((updated = null) != null) return NotFound();
+            return Ok(updated);
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public void DeleteByQuery([FromQuery] string id)
+        {
+            lokaleRepo.Delete(id);
+        }
+        
     }
 }

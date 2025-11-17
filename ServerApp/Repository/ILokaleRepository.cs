@@ -9,6 +9,6 @@ public interface ILokaleRepository
     
     Lokale Update(Lokale lokale);
     
-    void Delete(Lokale lokale);
+    void Delete(string id);
     
 }
