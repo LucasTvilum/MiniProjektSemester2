@@ -7,7 +7,7 @@ public class AnnonceService : IAnnonce
 {
     private HttpClient http;
     
-    private string url = "http://localhost:5267";
+    private string url = "http://localhost:5107";
 
     public AnnonceService(HttpClient http)
     {
@@ -17,18 +17,18 @@ public class AnnonceService : IAnnonce
     public async Task<Annonce[]> GetAll()
     {
         Console.WriteLine("GetAll from mock");
-        var todoitemlist = await http.GetFromJsonAsync<Annonce[]>($"{url}/api/annonce/");
+        var todoitemlist = await http.GetFromJsonAsync<Annonce[]>($"{url}/api/todo");
        
         return todoitemlist;
     }
 
-    public async Task Add(Annonce item)
+    public async Task Add(Annonce annonce)
     {
-        await http.PostAsJsonAsync($"{url}/api/annonce/", item);
+        await http.PostAsJsonAsync($"{url}/api/annonce", annonce);
     }
 
-    public async Task Delete(string todoid)
+    public async Task Delete(string id)
     {
-        await http.DeleteAsync($"{url}/api/annonce/{todoid}");
+        await http.DeleteAsync($"{url}/api/annonce/{id}");
     }
 }
