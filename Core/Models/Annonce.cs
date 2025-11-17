@@ -7,7 +7,6 @@ public class Annonce
     public int Pris { get; set; }
     public string BilledeUrl { get; set; }
     public string type { get; set; }
-    
     public bool Aktiv { get; set; }
     
 }
