@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ServerApp.Models
+namespace Core.Models
 {
     public class Bruger
     {
