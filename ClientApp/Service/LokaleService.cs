@@ -18,8 +18,8 @@ public class LokaleService : ILokaler
     {
         Console.WriteLine("GetAll from mock");
         var Lokalelist = await http.GetFromJsonAsync<Lokale[]>($"{url}/api/todo");
-       
-        return lokalelist;
+        
+        return Lokalelist;
     }
 
     public async Task Add(Lokale lokale)

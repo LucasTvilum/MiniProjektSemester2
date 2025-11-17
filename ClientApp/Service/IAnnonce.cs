@@ -2,16 +2,12 @@
 
 namespace ClientApp.Service;
 
+
 public interface IAnnonce
 {
+    Task<Annonce[]> GetAll();
 
+    Task Add(Annonce item);
 
-    public interface IAnnonce
-    {
-        Task<Annonce[]> GetAll();
-
-        Task Add(Annonce item);
-
-        Task Delete(string todoid);
-    }
+    Task Delete(string todoid);
 }
