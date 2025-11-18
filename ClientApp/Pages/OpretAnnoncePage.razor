@@ -23,7 +23,17 @@
     <div class="col-md-12 mb-3">
         <label for="Category">Category</label>
         <InputSelect id="Category" @bind-Value="annonce.Type"> 
-            @foreach (var cat in categories)
+            @foreach (var cat in tøjcategories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </InputSelect>
+    </div>
+    
+    <div class="col-md-12 mb-3">
+        <label for="Category">Size</label>
+        <InputSelect id="Category" @bind-Value="annonce.Size"> 
+            @foreach (var cat in sizecategories)
             {
                 <option value="@cat">@cat</option>
             }
@@ -81,8 +91,9 @@
 
 @code {
     
-    private List<string> categories = new List<string> { "tøj", "bukser", "hat", "" +
-                                                                                 "" };
+    private List<string> tøjcategories = new List<string> { "tøj", "bukser", "hat" };
+    
+    private List<string> sizecategories = new List<string> { "L", "M", "S" };
     [Inject]
     private IAnnonce annonceService { get; set; }
     
@@ -93,7 +104,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        keys = await FileService.GetAllKeys();
+        //keys = await FileService.GetAllKeys();
     }
 
     private async Task UploadFile(InputFileChangeEventArgs e)
