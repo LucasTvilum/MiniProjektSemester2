@@ -1,40 +1,41 @@
 using ServerApp.Repository;
+using Microsoft.Extensions.Options;
+using ServerApp.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
 builder.Services.AddSingleton<IAnnonceRepository, AnnonceMongoDB>();
 builder.Services.AddSingleton<IBrugerRepository, BrugerMongoDB>();
 builder.Services.AddSingleton<ILokaleRepository, LokaleMongoDB>();
+builder.Services.AddOpenApi();
+
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowBlazor",
-        policy => policy.AllowAnyOrigin()
+    options.AddPolicy("policy", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowAnyMethod();
+    });
 });
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 
 app.UseCors("policy");
 
 app.UseAuthorization();
-
-app.UseCors("AllowBlazor");
 
 app.MapControllers();
 

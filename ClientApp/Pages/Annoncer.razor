@@ -3,48 +3,64 @@
 
 <h3>Annoncer</h3>
 
-
-@foreach (var a in Annonce)
+@if (Annonce == null)
 {
-    <div class="annonce-card">
-        <img src="@a.Image" width="200" />
-        <h3>@a.Description</h3>
-        <p>@a.Price kr.</p>
+    <p>Loader annoncer...</p>
+}
+else if (!Annonce.Any())
+{
+    <p>Ingen aktive annoncer.</p>
+}
+else
+{
 
-        <button @onclick="() => Køb(a.Id)">KØB</button>
+    @foreach (var a in Annonce)
+    {
+        <div class="annonce-card">
+            <img src="@a.Image" width="200"/>
+            <h3>@a.Description</h3>
+            <p>@a.Price kr.</p>
+
+            <button @onclick="() => Køb(a.Id)">KØB</button>
+        </div>
+    }
+}
+
+@if (modalWindow)
+{
+    <div class="modal">
+        <div class="modal-content">
+            <h4>Du har valgt annonce: @selectedId</h4>
+            <button @onclick="Luk">Luk</button>
+        </div>
     </div>
 }
 
 @code {
     bool modalWindow = false;
     string selectedId;
-    
-    [Inject]
-    private IAnnonce annonceService { get; set; }
 
-// fake data indtil backend er klar
-    List<Annonce> Annonce = new()
-    {
-        new() { Description = "Sort Jakke", Price = 150, Image = "" },
-        new() { Description = "Taske", Price = 80, Image = "" }
-    };
+    [Inject] private IAnnonce annonceService { get; set; }
+
+    Annonce[] Annonce;
 
     private void Køb(string id)
     {
         selectedId = id;
         modalWindow = true;
-        
+
     }
 
     private void Luk()
     {
-      
+
         modalWindow = false;
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
-        await annonceService.GetAll();
+        Annonce = await annonceService.GetAll();
     }
+
 }
 
