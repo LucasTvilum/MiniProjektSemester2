@@ -28,15 +28,14 @@ namespace ServerApp.Controllers
             Console.WriteLine("Add annonceservice");
             annonceRepo.Add(annonce);
         }
-
-
+        
+        
         [HttpGet("{id}")]
-        public ActionResult<Annonce> Update(string id, [FromBody] Annonce annonce)
+        public ActionResult<Annonce> GetById(string id)
         {
-            annonce.Id = id;
-            var updated = annonceRepo.Update(annonce);
-            if (updated == null) return NotFound();
-            return Ok(updated);
+            var annonce = annonceRepo.GetAll().FirstOrDefault(a => a.Id == id);
+            if (annonce == null) return NotFound();
+            return Ok(annonce);
         }
 
         [HttpDelete]
@@ -45,6 +44,7 @@ namespace ServerApp.Controllers
         {
             annonceRepo.Delete(id);
         }
+        
         
     }
 }

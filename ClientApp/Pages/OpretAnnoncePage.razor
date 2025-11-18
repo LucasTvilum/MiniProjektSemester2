@@ -130,19 +130,14 @@
         // Sæt annoncen til at bruge valgt billede
         annonce.Image = FileService.ConvertToUrl(key);
     }
- 
+    
     private async Task HandleSubmit()
     {
-        Annonce annoncetoadd = new()
-        {
-            Description = "bla",
-            Price = 150, Type = "tøj",
-            Size = "M", Color = "red", Image = "no image", Status = "Denied", Sælger_Id = "sælgerid", Køber_Id = "køberid",
-            Lokale_Id = "123", lokale = new Lokale { Id = "123", Name = "test", Location = "derhenne", Åbningstid = "123", Bemanding = "ja", Type = "ja", Adgang = "ja" }
-        };
+        annonce.Status = "Aktiv";   
+        await annonceService.Add(annonce);
         
-        Console.WriteLine("handle submit");
-        await annonceService.Add(annoncetoadd);
+        annonce = new();
     }
+  
     
 }
