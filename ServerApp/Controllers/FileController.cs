@@ -74,6 +74,10 @@ public class FileController : ControllerBase
     public List<string> GetAll()
     {
         List<string> res = new();
+        
+        if (!Directory.Exists(PATH))
+            Directory.CreateDirectory(PATH);
+        
         DirectoryInfo folder = new DirectoryInfo(PATH);
         foreach (var f in folder.EnumerateFiles())
         {

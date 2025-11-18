@@ -14,12 +14,9 @@ public class AnnonceService : IAnnonce
         this.http = http;
     }
 
-    public async Task<Annonce[]> GetAll()
+    public async Task<List<Annonce>> GetAll()
     {
-        Console.WriteLine("GetAll from mock");
-        var annoncelist = await http.GetFromJsonAsync<Annonce[]>($"{url}/api/annonce/");
-       
-        return annoncelist;
+        return await http.GetFromJsonAsync<List<Annonce>>($"{url}/api/annonce");
     }
 
     public async Task Add(Annonce annonce)

@@ -5,7 +5,7 @@ namespace ClientApp.Service;
 
 public interface IAnnonce
 {
-    Task<Annonce[]> GetAll();
+    Task<List<Annonce>> GetAll();
 
     Task Add(Annonce item);
 
