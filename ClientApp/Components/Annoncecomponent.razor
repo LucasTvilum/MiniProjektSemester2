@@ -1,0 +1,54 @@
+@using Core.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using System
+@using System.IO
+
+
+<h3>Annoncer</h3>
+
+<h3>@(IsEdit ? "Rediger annonce" : "Opret annonce")</h3>
+
+<div class="form-container">
+    
+    <label>Billede</label>
+    <input type="file" @onchange="OnImageSelected" />
+
+    @if (!string.IsNullOrWhiteSpace(Item.Image))
+    {
+        <img src="@Item.Image" width="200" style="margin-top:10px;" />
+    }
+    
+    <label>Beskrivelse</label>
+    <textarea class="form-control" @bind="Item.Description"></textarea>
+
+    <label>Pris</label>
+    <input type="number" class="form-control" @bind="Item.Price" />
+
+    <button @onclick="GemItem">Gem</button>
+</div>
+
+
+@code {
+    [Parameter] public Annonce Item { get; set; } = new();
+    [Parameter] public EventCallback<Annonce> OnGem { get; set; }
+    [Parameter] public bool IsEdit { get; set; }
+
+    private async Task OnImageSelected(ChangeEventArgs e)
+    {
+        var file = (Microsoft.AspNetCore.Components.Forms.IBrowserFile)e.Value;
+
+    
+        using var stream = file.OpenReadStream(maxAllowedSize: 5_000_000);
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+
+        var bytes = ms.ToArray();
+        Item.Image = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
+    }
+
+    private async Task GemItem()
+    {
+        await OnGem.InvokeAsync(Item);
+    }
+    
+}

@@ -4,7 +4,6 @@ namespace Core.Models
     public class Annonce
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-
         public string Description { get; set; }
         public double Price { get; set; }
         public string Type { get; set; }
