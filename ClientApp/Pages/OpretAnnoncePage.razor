@@ -1,8 +1,10 @@
 ﻿@using Core.Models
 @using ClientApp.Service
-
+@using Microsoft.AspNetCore.Components.Forms
+@inject IFileService FileService
 @page "/OpretAnnoncePage"
 <h3>OpretAnnoncePage</h3>
+
 
 <EditForm Model="@annonce" OnValidSubmit="@HandleSubmit" class="row p-3">
     <DataAnnotationsValidator />
@@ -28,6 +30,43 @@
         </InputSelect>
     </div>
     
+    <div class="col-md-12 mb-3">
+        <label>Billeder</label>
+        <div class="mb-2">
+            <InputFile OnChange="@UploadFile" />
+            <p class="text-muted">@statusMessage</p>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(annonce.Image))
+        {
+            <div class="mb-3">
+                <label>Valgt billede</label><br />
+                <img src="@annonce.Image" alt="Valgt billede" width="150" height="150" />
+            </div>
+        }
+
+        @if (keys != null)
+        {
+            <div class="images-grid d-flex flex-wrap gap-3">
+                @foreach (var key in keys)
+                {
+                    <div class="image-item border p-2">
+                        <span class="d-block">@key</span>
+                        <img src="@FileService.ConvertToUrl(key)" alt="Billede" width="100" height="100" />
+                        <div class="mt-2 d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-secondary" @onclick="() => SetAnnonceImage(key)">Vælg</button>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => DeleteFile(key)">Slet</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>Waiting for fileserver....</p>
+        }
+    </div>
+    
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary" >Submit</button>
     </div>
@@ -35,6 +74,8 @@
     <div class="col-12 mb-3">
         <button type="reset" class="btn btn-primary">Reset</button>
     </div>
+    
+    
 
 </EditForm> 
 
@@ -46,6 +87,49 @@
     private IAnnonce annonceService { get; set; }
     
     private Annonce annonce = new();
+
+    private string statusMessage = "<no status message - yet>";
+    private List<string>? keys;
+
+    protected override async Task OnInitializedAsync()
+    {
+        keys = await FileService.GetAllKeys();
+    }
+
+    private async Task UploadFile(InputFileChangeEventArgs e)
+    {
+     
+        var file = e.File;
+        var stream = file.OpenReadStream(maxAllowedSize: 10_000_000); // fx 10 MB
+        
+        var res = await FileService.SendFile(file.Name, stream);
+        
+        statusMessage = res.success ? 
+            $"Success! Info fra server: <{res.info}>" : 
+            $"Fejl: {res.info}";
+        
+        keys = await FileService.GetAllKeys();
+       
+    }
+
+    private async Task DeleteFile(string key)
+    {
+       
+        var resp = await FileService.DeleteFile(key);
+        
+        statusMessage = resp.success ? 
+            $"Success! Info fra server:{resp.info}" : 
+            $"Fejl: {resp.info}";
+        
+        keys = await FileService.GetAllKeys();
+       
+    }
+
+    private void SetAnnonceImage(string key)
+    {
+        // Sæt annoncen til at bruge valgt billede
+        annonce.Image = FileService.ConvertToUrl(key);
+    }
  
     private async Task HandleSubmit()
     {
