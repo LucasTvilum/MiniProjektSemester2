@@ -24,6 +24,7 @@ public class AnnonceService : IAnnonce
 
     public async Task Add(Annonce annonce)
     {
+        Console.WriteLine("Add annonceservice");
         await http.PostAsJsonAsync($"{url}/api/annonce", annonce);
     }
 
