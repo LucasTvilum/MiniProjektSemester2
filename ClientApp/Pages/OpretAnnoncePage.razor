@@ -18,15 +18,27 @@
         <InputNumber id="Price" @bind-Value="annonce.Price" class="form-control" />
     </div>
     
+    
     <div class="col-md-12 mb-3">
-        <label for="Category">Category</label>
+        <label for="Category">Tøj kategori</label>
         <InputSelect id="Category" @bind-Value="annonce.Type"> 
-            @foreach (var cat in categories)
+            @foreach (var cat in tøjcategories)
             {
                 <option value="@cat">@cat</option>
             }
         </InputSelect>
     </div>
+    
+    <div class="col-md-12 mb-3">
+        <label for="Category">Størrelse</label>
+        <InputSelect id="Category" @bind-Value="annonce.Size"> 
+            @foreach (var cat in sizecategories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </InputSelect>
+    </div>
+
     
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary" >Submit</button>
@@ -38,14 +50,26 @@
 
 </EditForm> 
 
+@if (annoncetoshow != null)
+{
+    <div class="annonce-card">
+        <img src="@annoncetoshow.Image" width="200"/>
+        <h3>@annoncetoshow.Description</h3>
+        <p>@annoncetoshow.Price kr.</p>
+    </div>
+}
+
 @code {
     
-    private List<string> categories = new List<string> { "tøj", "bukser", "hat", "" +
-                                                                                 "" };
+    private List<string> tøjcategories = new List<string> { "tøj", "bukser", "hat" };
+    
+    private List<string> sizecategories = new List<string> { "tøj", "bukser", "hat" };
     [Inject]
     private IAnnonce annonceService { get; set; }
     
     private Annonce annonce = new();
+
+    private Annonce annoncetoshow = new();
  
     private async Task HandleSubmit()
     {
@@ -59,6 +83,7 @@
         
         Console.WriteLine("handle submit");
         await annonceService.Add(annoncetoadd);
+        annoncetoshow = annoncetoadd;
     }
     
 }
