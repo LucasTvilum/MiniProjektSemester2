@@ -2,16 +2,11 @@
 
 namespace ClientApp.Service;
 
-public interface ILokaler
-{
-
-
     public interface ILokaler
     {
-        Task<Annonce[]> GetAll();
+        Task<List<Lokale>> GetAll();
 
-        Task Add(Annonce item);
+        Task Add(Lokale item);
 
-        Task Delete(string todoid);
+        Task Delete(string lokaleid);
     }
-}

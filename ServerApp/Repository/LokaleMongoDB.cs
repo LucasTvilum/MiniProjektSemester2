@@ -11,7 +11,7 @@ public class LokaleMongoDB : ILokaleRepository
     {
         var  client = new MongoClient("mongodb://localhost:27017");
         var database = client.GetDatabase("TøjmarkedMongoDB");
-        _collection = database.GetCollection<Lokale>("TøjmarkedMongoDB");
+        _collection = database.GetCollection<Lokale>("lokaler");
     }
 
     public List<Lokale> GetAll()

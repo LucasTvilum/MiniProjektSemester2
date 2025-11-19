@@ -7,28 +7,28 @@ public class LokaleService : ILokaler
 {
     private HttpClient http;
     
-    private string url = "http://localhost:5267";
+    private string url = "http://localhost:5107";
 
     public LokaleService(HttpClient http)
     {
         this.http = http;
     }
 
-    public async Task<Lokale[]> GetAll()
+    public async Task<List<Lokale>> GetAll()
     {
         Console.WriteLine("GetAll from mock");
-        var Lokalelist = await http.GetFromJsonAsync<Lokale[]>($"{url}/api/todo");
+        var Lokalelist = await http.GetFromJsonAsync<Lokale[]>($"{url}/api/lokale");
         
-        return Lokalelist;
+        return Lokalelist.ToList();
     }
 
     public async Task Add(Lokale lokale)
     {
-        await http.PostAsJsonAsync($"{url}/api/todo", lokale);
+        await http.PostAsJsonAsync($"{url}/api/lokale", lokale);
     }
 
     public async Task Delete(string todoid)
     {
-        await http.DeleteAsync($"{url}/api/todo/{todoid}");
+        await http.DeleteAsync($"{url}/api/lokale/{todoid}");
     }
 }
