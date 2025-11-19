@@ -1,5 +1,9 @@
+@page "/Annoncer"
 @using Core.Models
 @using ClientApp.Service
+@inject HttpClient Http
+@inject PurchaseState PurchaseState
+@inject NavigationManager NavigationManager
 
 <h3>Annoncer</h3>
 
@@ -15,27 +19,31 @@
     </div>
 }
 
+
 @code {
     bool modalWindow = false;
     string selectedId;
     
     [Inject]
     private IAnnonce annonceService { get; set; }
+    
 
 // fake data indtil backend er klar
-    List<Annonce> Annonce = new()
+    /*List<Annonce> Annonce = new()
     {
         new() { Description = "Sort Jakke", Price = 150, Image = "" },
         new() { Description = "Taske", Price = 80, Image = "" }
-    };
+    };*/
 
-    Annonce[] annonceliste;
-    
-    private void Køb(string id)
+    Annonce[] annonceliste = Array.Empty<Annonce>();
+  
+    private async Task Køb(string id)
     {
         selectedId = id;
         modalWindow = true;
-        
+        var requestId = await PurchaseApi.SendAsync(Http, id, 1);
+        PurchaseState.Add(requestId);
+
     }
 
     private void Luk()
