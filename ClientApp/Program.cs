@@ -20,7 +20,7 @@ public class Program
         builder.Services.AddSingleton<IAnnonce, AnnonceService>();
         builder.Services.AddSingleton<IBruger, BrugerService>();
         builder.Services.AddSingleton<IFileService, FileService>();
-        //builder.Services.AddSingleton<ILokaler, LokaleService>();
+        builder.Services.AddSingleton<ILokaler, LokaleService>();
 
         await builder.Build().RunAsync();       
     }

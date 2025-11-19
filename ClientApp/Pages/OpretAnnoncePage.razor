@@ -3,6 +3,7 @@
 @using ClientApp.Service
 @using Microsoft.AspNetCore.Components.Forms
 @inject IFileService FileService
+@inject ILokaler lokaleService
 @page "/OpretAnnoncePage"
 <h3>OpretAnnoncePage</h3>
 
@@ -48,7 +49,7 @@
     </div>
     
     <div class="col-md-12 mb-3">
-        <label for="Category">Size</label>
+        <label for="Category">Color</label>
         <InputSelect id="Category" @bind-Value="annonce.Color"> 
             @foreach (var cat in colorcategories)
             {
@@ -56,7 +57,18 @@
             }
         </InputSelect>
     </div>
-
+@if (lokalecategories != null){
+    <div class="col-md-12 mb-3">
+        <label for="Category">Lokale</label>
+        <InputSelect id="Category" @bind-Value="annonce.lokale"> 
+            @foreach (var cat in lokalecategories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </InputSelect>
+    </div>
+}
+    
     
     <div class="col-md-12 mb-3">
         <label>Billeder</label>
@@ -112,6 +124,9 @@
     private List<string> sizecategories = new List<string> { "L", "M", "S" };
     
     private List<string> colorcategories = new List<string> { "black", "white", "red" };
+    
+    private List<Lokale> lokalecategories = new List<Lokale> { new Lokale() };
+    
     [Inject]
     private IAnnonce annonceService { get; set; }
     
@@ -129,6 +144,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        lokalecategories = await lokaleService.GetAll();
         //keys = await FileService.GetAllKeys();
     }
 
