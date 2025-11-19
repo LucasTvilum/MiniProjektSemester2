@@ -1,8 +1,11 @@
-@page "/aktiveannoncer"
+@page "/Annoncer"
 @using Core.Models
 @using ClientApp.Service
 @using ClientApp.Components
 @using System.Linq
+@inject HttpClient Http
+@inject PurchaseState PurchaseState
+@inject NavigationManager NavigationManager
 
 <h3>Aktive annoncer</h3>
 
@@ -24,11 +27,35 @@ else
 
 @code {
     [Inject] private IAnnonce annonceService { get; set; }
+    bool modalWindow = false;
+    string selectedId;
+    
+    [Inject]
+    private IAnnonce annonceService { get; set; }
+    
 
     private Annonce[] aktiveAnnoncer;
 
+    Annonce[] annonceliste = Array.Empty<Annonce>();
+  
+    private async Task Køb(string id)
+    {
+        selectedId = id;
+        modalWindow = true;
+        var requestId = await PurchaseApi.SendAsync(Http, id, 1);
+        PurchaseState.Add(requestId);
+
+    }
+
+    private void Luk()
+    {
+      
+        modalWindow = false;
+    }
+    
     protected override async Task OnInitializedAsync()
     {
-        aktiveAnnoncer = await annonceService.GetAll();
+      annonceliste =  await annonceService.GetAll();
     }
 }
+

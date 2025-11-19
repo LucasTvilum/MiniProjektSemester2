@@ -2,7 +2,7 @@ namespace ClientApp.Service;
 
 public interface IFileService
 {
-    // represent a collection of files containing images.
+    // represent a collection of files containing images..
     // when a file is added, a unique key is generated and returned.
     
     // send s as a file. [success] is true if the file was saved and then the info is the
