@@ -1,0 +1,36 @@
+@page "/aktiveannoncer"
+@using Core.Models
+@using ClientApp.Service
+@using ClientApp.Components
+@using System.Linq
+
+@if (aktiveAnnoncer == null)
+{
+    <p>Loader annoncer...</p>
+}
+else if (!aktiveAnnoncer.Any())
+{
+    <p>Ingen aktive annoncer.</p>
+}
+else
+{
+    <div class="annonce-grid">
+        @foreach (var a in aktiveAnnoncer)
+        {
+            <AnnonceBox Annonce="a" />
+        }
+    </div>
+}
+
+@code {
+    [Inject] private IAnnonce annonceService { get; set; }
+
+    private List<Annonce> aktiveAnnoncer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        aktiveAnnoncer = (await annonceService.GetAll())
+            .Where(a => a.Status == "Aktiv")
+            .ToList();
+    }
+}
