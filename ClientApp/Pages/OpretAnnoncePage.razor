@@ -6,7 +6,7 @@
 @inject ILokaler lokaleService
 @inject UserState BrugerState
 @page "/OpretAnnoncePage"
-<h3>OpretAnnoncePage</h3>
+<h3>Opret Annonce</h3>
 
 
 <EditForm Model="@annonce" OnValidSubmit="@HandleSubmit" class="row p-3">
@@ -72,41 +72,29 @@
     
     
     <div class="col-md-12 mb-3">
-        <label>Billeder</label>
-        <div class="mb-2">
-            <InputFile OnChange="@UploadFile" />
-            <p class="text-muted">@statusMessage</p>
-        </div>
+
+        <InputFile OnChange="@UploadFile" />
+
+        @if (isUploading)
+        {
+            <p class="text-muted mt-2">Uploader billede...</p>
+        }
+        else if (!string.IsNullOrWhiteSpace(statusMessage))
+        {
+            <p class="text-info mt-2">@statusMessage</p>
+        }
 
         @if (!string.IsNullOrWhiteSpace(annonce.Image))
         {
-            <div class="mb-3">
+            <div class="mt-3">
                 <label>Valgt billede</label><br />
-                <img src="@annonce.Image" alt="Valgt billede" width="150" height="150" />
+                <img src="@annonce.Image"
+                     alt="Valgt billede"
+                     style="width:150px; height:150px; object-fit:cover; border-radius:8px;" />
             </div>
-        }
-
-        @if (keys != null)
-        {
-            <div class="images-grid d-flex flex-wrap gap-3">
-                @foreach (var key in keys)
-                {
-                    <div class="image-item border p-2">
-                        <span class="d-block">@key</span>
-                        <img src="@FileService.ConvertToUrl(key)" alt="Billede" width="100" height="100" />
-                        <div class="mt-2 d-flex gap-2">
-                            <button type="button" class="btn btn-sm btn-secondary" @onclick="() => SetAnnonceImage(key)">Vælg</button>
-                            <button type="button" class="btn btn-sm btn-danger" @onclick="() => DeleteFile(key)">Slet</button>
-                        </div>
-                    </div>
-                }
-            </div>
-        }
-        else
-        {
-            <p>Waiting for fileserver....</p>
         }
     </div>
+
     
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary" >Opret Annonce</button>
@@ -133,14 +121,14 @@
     
     private Annonce annonce = new()
     {
-        Title = "overskrift",
-        Description = "bla",
-        Price = 150, Type = "tøj",
-        Size = "M", Color = "red", Image = "no image", Status = "Aktiv", Sælger_Id = "sælgerid", Køber_Id = "køberid",
+        Title = "Overskrift",
+        Description = "Beskrivelse",
+        Price = 0, Type = "Type",
+        Size = "", Color = "", Image = "", Status = "Aktiv", Sælger_Id = "sælgerid", Køber_Id = "køberid",
         Lokale_Id = "123", lokale = new Lokale {Name = "test", Location = "derhenne", Åbningstid = "123", Bemanding = "ja", Type = "ja", Adgang = "ja" }
     };
 
-    private string statusMessage = "<no status message - yet>";
+    private string statusMessage = "";
     private List<string>? keys;
     
     protected override async Task OnInitializedAsync()
@@ -157,11 +145,15 @@
         
         var res = await FileService.SendFile(file.Name, stream);
         
-        statusMessage = res.success ? 
-            $"Success! Info fra server: <{res.info}>" : 
-            $"Fejl: {res.info}";
+        statusMessage = res.success 
+            ? $"Billede uploadet"
+            : $"Fejl: {res.info}";
         
         keys = await FileService.GetAllKeys();
+        
+        isUploading = false;
+
+        StateHasChanged();
        
     }
 
@@ -198,5 +190,7 @@
         await annonceService.Add(annonce);
         annonce = new Annonce();
     }
+    
+    private bool isUploading = false;
     
 }
