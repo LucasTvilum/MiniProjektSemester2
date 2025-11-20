@@ -42,6 +42,9 @@ public class AnnonceMongoDB : IAnnonceRepository
 
         if (!string.IsNullOrEmpty(filter.Type))
             query = query.Where(a => a.Type == filter.Type);
+        
+        if (!string.IsNullOrEmpty(filter.Size))
+            query = query.Where(a => a.Size == filter.Size);
 
         if (filter.Price > 0)
             query = query.Where(a => a.Price == filter.Price);
