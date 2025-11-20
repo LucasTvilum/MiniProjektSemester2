@@ -1,10 +1,8 @@
-@page "/aktiveannoncer"
+@page "/annoncer"
 @using Core.Models
 @using ClientApp.Service
 @using ClientApp.Components
 @using System.Linq
-
-<h3>Aktive annoncer</h3>
 
 @if (aktiveAnnoncer == null)
 {
@@ -16,19 +14,50 @@ else if (!aktiveAnnoncer.Any())
 }
 else
 {
-    @foreach (var a in aktiveAnnoncer)
-    {
-        <Annoncecomponent Item="a" IsEdit="false" />
-    }
+    <div class="annonce-grid">
+        @foreach (var a in aktiveAnnoncer)
+        {
+            <AnnonceBox Annonce="a" />
+        }
+    </div>
 }
 
 @code {
     [Inject] private IAnnonce annonceService { get; set; }
 
-    private Annonce[] aktiveAnnoncer;
+    private List<Annonce> aktiveAnnoncer;
 
     protected override async Task OnInitializedAsync()
     {
-        aktiveAnnoncer = await annonceService.GetAll();
+        var result = await annonceService.GetAll();
+
+        Console.WriteLine("ANTAL ANNONCER FRA SERVER: " + result.Count());
+        
+        aktiveAnnoncer = result
+            .Where(a => a.Status == "Aktiv")
+            .ToList();
     }
+    
+    private async Task Køb(string id)
+    {
+        selectedId = id;
+        modalWindow = true;
+        var requestId = await PurchaseApi.SendAsync(Http, id, 1);
+        PurchaseState.Add(requestId);
+
+    }
+    
+    private void Luk()
+    {
+      
+        modalWindow = false;
+    }
+    
+    [Inject] public HttpClient Http { get; set; }
+  
+    [Inject] public PurchaseState PurchaseState { get; set; }
+    
+    bool modalWindow = false;
+    string selectedId;
+    
 }

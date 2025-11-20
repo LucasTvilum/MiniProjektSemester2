@@ -34,4 +34,18 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapPost("/api/purchases", (PurchaseRequest req) =>
+{
+    return Results.Ok(new PurchaseCreated(Guid.NewGuid().ToString("N")));
+});
+
+app.MapPost("/api/purchases/cancel", (CancelRequest req) =>
+{
+    return Results.Ok();
+});
+
 app.Run();
+
+public sealed record PurchaseRequest(string ProductId, int Quantity);
+public sealed record CancelRequest(string RequestId);
+public sealed record PurchaseCreated(string RequestId);

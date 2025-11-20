@@ -1,6 +1,36 @@
 @page "/Mine_køb"
-<h3>Mine_køb</h3>
+@using ClientApp.Service
+@inject HttpClient Http
+@inject PurchaseState PurchaseState
+
+
+<h3>Mine køb</h3>
+
+@if (PurchaseState.RequestIds.Count == 0 )
+{
+    <p>Ingen køb endnu homie </p>
+}
+else
+{
+    <ul>
+        @foreach (var id in PurchaseState.RequestIds)
+        {
+            <li>
+                @id
+                <button @onclick ="() => Annuller(id)">Annuller</button>
+            </li>
+            
+        }
+    </ul>
+}
 
 @code {
+
+    private async Task Annuller(string requestId)
+    {
+        await PurchaseApi.CancelAsync(Http, requestId);
+        PurchaseState.Remove(requestId);
+        StateHasChanged();
+    }
     
 }
