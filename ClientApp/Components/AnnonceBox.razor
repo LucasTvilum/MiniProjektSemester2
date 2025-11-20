@@ -13,10 +13,15 @@
         </p>
 
         <p class="annonce-description">@Annonce.Description</p>
+        <button class="køb-knap"
+                @onclick="() => OnKøb.InvokeAsync(Annonce.Id)">
+            KØB
+        </button>
     </div>
 
 </div>
 
 @code {
     [Parameter] public Annonce Annonce { get; set; }
+    [Parameter] public EventCallback<string> OnKøb { get; set; }
 }
