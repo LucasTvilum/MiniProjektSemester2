@@ -73,7 +73,7 @@
 
         var result = await FileService.SendFile(file.Name, stream);
 
-        statusMessage = result.success ? "Upload succes" : $"Fejl: {result.info}";
+        statusMessage = result.success ? "Uploads succes" : $"Fejl: {result.info}";
 
         keys = await FileService.GetAllKeys();
     }
