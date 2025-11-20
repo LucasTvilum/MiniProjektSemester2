@@ -22,19 +22,60 @@ else
     </div>
 }
 
-@code {
-    [Inject] private IAnnonce annonceService { get; set; }
 
+<div class="filter-box">
+
+    <select @bind="selectedType">
+        <option value="">Alle kategorier</option>
+        <option value="tøj">Tøj</option>
+        <option value="bukser">Bukser</option>
+        <option value="hat">Hat</option>
+    </select>
+
+    <select @bind="selectedSize">
+        <option value="">Alle størrelser</option>
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+    </select>
+
+    <select @bind="selectedColor">
+        <option value="">Alle farver</option>
+        <option value="black">Sort</option>
+        <option value="white">Hvid</option>
+        <option value="red">Rød</option>
+    </select>
+
+    <select @bind="selectedLokaleId">
+        <option value="">Alle lokaler</option>
+        @foreach (var lok in lokaler)
+        {
+            <option value="@lok.Id">@lok.Name</option>
+        }
+    </select>
+
+    <button class="btn btn-primary" @onclick="ApplyFilters">
+        Filtrer
+    </button>
+</div>
+
+@code {
+    
     private List<Annonce> aktiveAnnoncer;
+    
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await annonceService.GetAll();
+        // Hent alle lokaler
+        lokaler = await lokaleService.GetAll();
 
-        Console.WriteLine("ANTAL ANNONCER FRA SERVER: " + result.Count());
+        // Hent alle annoncer
+        //alleAnnoncer = await annonceService.GetAll();
+
+        Console.WriteLine("ANTAL ANNONCER FRA SERVER: " + alleAnnoncer.Count());
         
-        aktiveAnnoncer = result
-            .Where(a => a.Status == "aktiv")
+        aktiveAnnoncer = alleAnnoncer
+            .Where(a => a.Status == "Aktiv")
             .ToList();
     }
     
@@ -53,11 +94,39 @@ else
         modalWindow = false;
     }
     
+    
+    
     [Inject] public HttpClient Http { get; set; }
   
     [Inject] public PurchaseState PurchaseState { get; set; }
     
     bool modalWindow = false;
     string selectedId;
+    
+    
+    
+    //Filtrering
+    private string selectedType = "";
+    private string selectedSize = "";
+    private string selectedColor = "";
+    private string selectedLokaleId = "";
+
+    private List<Annonce> alleAnnoncer;
+    private List<Lokale> lokaler = new();
+
+    [Inject] private IAnnonce annonceService { get; set; }
+    [Inject] private ILokaler lokaleService { get; set; }
+    
+    
+    private void ApplyFilters()
+    {
+        aktiveAnnoncer = alleAnnoncer
+            .Where(a => a.Status == "Aktiv")
+            .Where(a => selectedType == "" || a.Type == selectedType)
+            .Where(a => selectedSize == "" || a.Size == selectedSize)
+            .Where(a => selectedColor == "" || a.Color == selectedColor)
+            .Where(a => selectedLokaleId == "" || a.Lokale_Id == selectedLokaleId)
+            .ToList();
+    }
     
 }
