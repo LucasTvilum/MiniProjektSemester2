@@ -4,60 +4,166 @@
 @using ClientApp.Components
 @using System.Linq
 
-@if (aktiveAnnoncer == null)
-{
-    <p>Loader annoncer...</p>
-}
-else if (!aktiveAnnoncer.Any())
-{
-    <p>Ingen aktive annoncer.</p>
-}
-else
-{
-    <div class="annonce-grid">
-        @foreach (var a in aktiveAnnoncer)
+<div class="col-md-12 mb-3">
+    <label for="Category">Type</label>
+    <InputSelect id="Category" @bind-Value="annonce.Type">
+        @foreach (var cat in tøjcategories)
         {
-            <AnnonceBox Annonce="a" />
+            <option value="@cat">@cat</option>
         }
+    </InputSelect>
+</div>
+
+    
+    <div class="col-md-12 mb-3">
+        <label for="Category">Size</label>
+        <InputSelect id="Category" @bind-Value="annonce.Size">
+            @foreach (var cat in sizecategories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </InputSelect>
     </div>
-}
 
-@code {
-    [Inject] private IAnnonce annonceService { get; set; }
+    <div class="col-md-12 mb-3">
+        <label for="Price">Price</label>
+        <input placeholder="Price" type="number" @bind="filterPrice" class="form-control"/>    
+    </div>    
+    
+    <div class="col-md-12 mb-3">
+        <label for="Category">Color</label>
+        <InputSelect id="Category" @bind-Value="annonce.Color">
+            @foreach (var cat in colorcategories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </InputSelect>
+    </div>
 
-    private List<Annonce> aktiveAnnoncer;
+    <div class="col-md-12 mb-3">
+        <label for="Category">Lokale navn</label>
+        <InputSelect id="Category" @bind-Value="annonce.lokale">
+            @foreach (var cat in lokalecategories)
+            {
+                <option value="@cat">@cat</option>
+            }
+        </InputSelect>
+    </div>
 
-    protected override async Task OnInitializedAsync()
+    <button class="btn btn-primary" @onclick="FiltrerAnnoncer">Filtrer</button>
+    
+
+
+        <p>@filterMessage</p>
+    @if (aktiveAnnoncer == null)
     {
-        var result = await annonceService.GetAll();
+    
+        <p>Loader annoncer...</p>
+    }
+    else if (!aktiveAnnoncer.Any())
+    {
+    
+        <p>Ingen aktive annoncer.</p>
+    }
+    else
+    {
 
-        Console.WriteLine("ANTAL ANNONCER FRA SERVER: " + result.Count());
+        <div class="annonce-grid">
+            @foreach (var a in aktiveAnnoncer)
+            {
+                <AnnonceBox Annonce="a"/>
+            }
+        </div>
+    }
+
+    @code {
+
+        private List<string> tøjcategories = new List<string> { "tøj", "bukser", "hat" };
+
+        private List<string> sizecategories = new List<string> { "L", "M", "S" };
+
+        private List<string> colorcategories = new List<string> { "black", "white", "red" };
+
+        private List<Lokale> lokalecategories = new List<Lokale> { new Lokale() };
+
+        [Inject] private IAnnonce annonceService { get; set; }
+
+        private List<Annonce> aktiveAnnoncer;
+
+        protected override async Task OnInitializedAsync()
+        {
+            var result = await annonceService.GetAll();
+
+            Console.WriteLine("ANTAL ANNONCER FRA SERVER: " + result.Count());
+
+            aktiveAnnoncer = result
+                .Where(a => a.Status == "aktiv")
+                .ToList();
+        }
+
+//Type = type,
+// Size = size,
+// Price = price,
+// Color = color,
+        private Annonce annonce = new()
+        {
+
+            Size = "M", Color = "red", Image = "no image", Status = "Aktiv", Sælger_Id = "sælgerid", Køber_Id = "køberid",
+            Price = 150, Type = "tøj",
+            Lokale_Id = "123", lokale = new Lokale { Name = "test", Location = "derhenne", Åbningstid = "123", Bemanding = "ja", Type = "ja", Adgang = "ja" }
+        };
+
+        private async Task Køb(string id)
+        {
+            selectedId = id;
+            modalWindow = true;
+            var requestId = await PurchaseApi.SendAsync(Http, id, 1);
+            PurchaseState.Add(requestId);
+
+        }
+
+        private void Luk()
+        {
+
+            modalWindow = false;
+        }
+
+        [Inject] public HttpClient Http { get; set; }
+
+        [Inject] public PurchaseState PurchaseState { get; set; }
+
+        bool modalWindow = false;
+        string selectedId;
+
+        private string filterType;
+        private string filterSize;
+        private double filterPrice;
+        private string filterColor;
+        private string filterLokale;
+        private string filterMessage;
+
+        private async Task FiltrerAnnoncer()
+        {
+            try
+            {
+                aktiveAnnoncer = await annonceService.GetFiltered(filterType, filterSize, filterPrice, filterColor, filterLokale);
+
+                if (!aktiveAnnoncer.Any())
+                {
+                    filterMessage = "Ingen annoncer fundet med disse filtre.";
+                }
+                else
+                {
+                    filterMessage = $"{aktiveAnnoncer.Count} annoncer fundet.";
+                }
+            }
+            catch (Exception ex)
+            {
+                filterMessage = $"Fejl ved hentning af annoncer: {ex.Message}";
+            }
+        }
+
+    }
+
         
-        aktiveAnnoncer = result
-            .Where(a => a.Status == "aktiv")
-            .ToList();
-    }
-    
-    private async Task Køb(string id)
-    {
-        selectedId = id;
-        modalWindow = true;
-        var requestId = await PurchaseApi.SendAsync(Http, id, 1);
-        PurchaseState.Add(requestId);
 
-    }
-    
-    private void Luk()
-    {
-      
-        modalWindow = false;
-    }
-    
-    [Inject] public HttpClient Http { get; set; }
-  
-    [Inject] public PurchaseState PurchaseState { get; set; }
-    
-    bool modalWindow = false;
-    string selectedId;
-    
-}

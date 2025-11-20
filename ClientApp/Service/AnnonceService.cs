@@ -32,6 +32,7 @@ public class AnnonceService : IAnnonce
     {
         await http.DeleteAsync($"{url}/api/annonce/{id}");
     }
+    
 
     public async Task Update(Annonce annonce)
     {
