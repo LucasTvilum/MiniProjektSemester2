@@ -34,7 +34,7 @@ else
         Console.WriteLine("ANTAL ANNONCER FRA SERVER: " + result.Count());
         
         aktiveAnnoncer = result
-            .Where(a => a.Status == "Aktiv")
+            .Where(a => a.Status == "aktiv")
             .ToList();
     }
     
